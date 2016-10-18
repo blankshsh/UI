@@ -1,9 +1,18 @@
-var moving = {
+var LoginBox = {
+    /*
+        init //组件（创建内容）
+        bind(); //绑定（绑定元素）
+        assignment(); //创建样式（为元素添加样式）
+        click(); //点击事件
+        move(); //移动事件
+     */
     init: function(cfg) {
         cfg = cfg || {};
+        //console.log(cfg);
+        cfg.name=cfg.name || "";
         cfg.box = cfg.box || {};
         cfg.title = cfg.title || {};
-        cfg.button = cfg.button || {};
+        cfg.span = cfg.span || {};
         cfg.btnSure = cfg.btnSure || {};
         cfg.btnCancel = cfg.btnCancel || {};
         // console.log(cfg);
@@ -11,34 +20,38 @@ var moving = {
         // console.log(cfg.btnSure);
         // console.log(cfg.btnCancel);
         var me = this;
-        me.base(); //组件（创建内容）
-        me.bind(); //绑定（绑定元素）
-        me.assignment(cfg); //创建样式（为元素添加样式）
-        me.click(); //点击事件
-        me.move(); //移动事件
+        me.base(cfg); //组件（创建内容）
     },
-    base: function() {
+    base: function(cfg) {
+        //console.log(name);
         var me = this;
-        var loginbox_ = $('<div id="loginbox">');
+        var wrpname = cfg.name + 'loginbox';
+        console.log(wrpname);
+        var loginbox_ = $('<div id="' + wrpname + '">');
         var h1_ = $('<h1 id="hold">');
-        var btn_sure = $('<button class="btnSure">');
-        var btn_cancel = $('<button class="btnCancel">');
+        var btn_sure = $('<span class="btnSure">');
+        var btn_cancel = $('<span class="btnCancel">');
         loginbox_.append(h1_).append(btn_sure).append(btn_cancel);
         $("body").prepend(loginbox_);
-
+        me.bind(wrpname, cfg);
     },
-    bind: function() {
+    bind: function(wrpname, cfg) {
         var me = this;
-        me.box = $("#loginbox");
-        me.title = $("#hold");
-        me.btnSure = $(".btnSure");
-        me.btnCancel = $(".btnCancel");
-        me.button = $("button");
+        console.log(wrpname);
+        wrpname = '#' + wrpname;
+        me.box = $(wrpname);
+        //console.log(wrpname);
+        //console.log(me.box);
+        me.title = $('' + wrpname + ' #hold');
+        me.btnSure = $('' + wrpname + ' .btnSure');
+        me.btnCancel = $('' + wrpname + ' .btnCancel');
+        me.span = $('' + wrpname + ' span');
         me.loginbtn = $("#login");
+        me.assignment(wrpname, cfg);
     },
-    assignment: function(cfg) {
+    assignment: function(wrpname, cfg) {
         var me = this;
-        //console.log(cfg);
+        console.log(cfg);
         //console.log(me.hold);
         me.box.css({
             "width": "500px",
@@ -63,7 +76,7 @@ var moving = {
             "font-weight": "normal",
             "font-size": "20px"
         });
-        me.button.css({
+        me.span.css({
             "width": "100px",
             "height": "40px",
             "display": "inline-block",
@@ -72,9 +85,9 @@ var moving = {
             "line-height": "40px",
             "cursor": "pointer",
             "-webkit-user-select": "none",
-            "min-width":"100px",
+            "min-width": "100px",
             "min-height": "40px",
-            "overflow":"hidden"
+            "overflow": "hidden"
         });
         me.btnSure.css({
             "color": "#fff",
@@ -83,7 +96,7 @@ var moving = {
             "left": "50%",
             "top": "60%",
             "transform": "translate(-100%)",
-            "margin-left":"-50px"
+            "margin-left": "-50px"
         });
         me.btnCancel.css({
             "color": "#fff",
@@ -91,11 +104,11 @@ var moving = {
             "position": "absolute",
             "left": "50%",
             "top": "60%",
-            "margin-left":"50px"
+            "margin-left": "50px"
         });
         me.box.css(cfg.box);
         me.title.css(cfg.title);
-        me.button.css(cfg.button);
+        me.span.css(cfg.span);
         me.btnSure.css(cfg.btnSure);
         me.btnCancel.css(cfg.btnCancel);
         cfg.title.text = cfg.title.text || "欢迎登录";
@@ -104,8 +117,9 @@ var moving = {
         me.title.text(cfg.title.text);
         me.btnSure.text(cfg.btnSure.text);
         me.btnCancel.text(cfg.btnCancel.text);
+        me.click(wrpname, cfg);
     },
-    click: function() {
+    click: function(wrpname, cfg) {
         var me = this;
         me.loginbtn.on("click", function() {
             //处理冒泡
@@ -127,12 +141,15 @@ var moving = {
         document.onclick = function() {
             me.box.hide();
         }
+        me.move(wrpname, cfg);
     },
-    move: function() {
+    move: function(wrpname, cfg) {
         //点击拖动事件
         var left, top;
         var me = this;
-        $(document).delegate('#hold', 'mousedown', function(e) {
+        var hold_ = '' + wrpname + ' #hold';
+        //console.log(hold_);
+        $(document).delegate(hold_, 'mousedown', function(e) {
             left = e.clientX, top = e.clientY, $this = $(this).css('cursor', 'move');
             this.setCapture ? (
                 this.setCapture(),
@@ -144,7 +161,9 @@ var moving = {
         });
 
         function mouseMove(e) {
-            var target = $this.parents('#loginbox');
+            //console.log(hold_);
+            var target = $this.parents(wrpname);
+            //console.log(target);
             var l = Math.max((e.clientX - left + Number(target.css('margin-left').replace(/px$/, '')) || 0), -target.position().left);
             var t = Math.max((e.clientY - top + Number(target.css('margin-top').replace(/px$/, '')) || 0), -target.position().top);
             l = Math.min(l, $(window).width() - target.width() - target.position().left);

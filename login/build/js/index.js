@@ -2,17 +2,17 @@ $(document).ready(function() {
     //有默认样式
     //微软雅黑 文本居中 页面fixed居中 字体为20px
     //提供css接口，可以直接自行定义CSS，以及text接口用来定义文本内容
-    moving.init({
+    LoginBox.init({
+        name:"blank",
         box:{
             // width:500,
             // height:600
         },
-        button:{
+        span:{
             // width:30,
             // height:30
         },
         title: {
-            
             text:"登录框"
         },
         btnSure: {
@@ -24,4 +24,5 @@ $(document).ready(function() {
             text:"错误"
         }
     })
+
 })
