@@ -93,26 +93,41 @@ var LoginBox = {
         //运行绑定点击事件函数
         me.click(name_, cfg);
     },
+    addEvent: function(elem, type, handler) {　　
+        if (elem.addEventListener) {
+            elem.addEventListener(type, handler, false);
+        } else if (elem.attachEvent) {　　　　
+            elem['temp' + type + handler] = handler;　　　　
+            elem[type + handler] = function() {
+                elem['temp' + type + handler].apply(elem);　　
+            };　　
+            elem.attachEvent('on' + type, elem[type + handler]);　
+        } else {　　
+            elem['on' + type] = handler;　　
+        }
+    },
     click: function(name_, cfg) {
         //点击事件
+
         var me = this;
-        me.loginbtn.addEventListener('click', function() {
+        me.addEvent(me.loginbtn, 'click', function() {
             //处理冒泡
-            var e = window.event || event;
+            var e = event ? event : (window.event ? window.event : null);
             e.stopPropagation ? e.stopPropagation() : e.cancelBubble = !0;
             me.box.style.display = me.box.style.display == 'block' ? 'none' : 'block';
         })
-        me.btnSure.addEventListener('click', function() {
+        me.addEvent(me.btnSure, 'click', function() {
             me.box.style.display = "none";
         })
-        me.btnCancel.addEventListener('click', function() {
+        me.addEvent(me.btnCancel, 'click', function() {
             me.box.style.display = "none";
         })
-        me.box.addEventListener('click', function() {
+        me.addEvent(me.box, 'click', function() {
             //处理冒泡
             var e = window.event || event;
             e.stopPropagation ? e.stopPropagation() : e.cancelBubble = !0;
         })
+
         document.onclick = function() {
             me.box.style.display = "none";
         };
@@ -184,7 +199,7 @@ var LoginBox = {
             clientY = newClientY;
         };
         //绑定鼠标拖动的监听事件
-        me.title.addEventListener('mousedown', mouseDown);
+        me.addEvent(me.title, 'mousedown', mouseDown);
         //当窗口改变时 运行重排列
         window.onresize = function(e) {
             //console.log(me.box);

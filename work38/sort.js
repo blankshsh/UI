@@ -92,75 +92,88 @@ var create = {
     btn: function(cfg) {
         var wrptab = document.getElementById('tab');
         var tr01 = wrptab.childNodes[0].childNodes;
-        console.log(tr01);
+        //console.log(tr01);
         addbtnup(cfg);
         addbtndown(cfg);
 
         function btnclick(divNode, flag, cfg) {
             divNode.addEventListener('click', function(eve) {
                 //console.log(cfg)
-                var row_length = cfg.Content.length;
+                var row_length = cfg.Content.length,
+                    col_length = cfg.score.length;
                 var content = eve.target.parentNode.innerHTML.split('<')[0],
                     tab = document.getElementById('tab'),
                     listNum = cfg.Content.indexOf(content),
-                    sortList = [],
+                    oldList = [],
                     newList = [],
                     trList = tab.childNodes;
                 //取出要排序的数据，保存在数组中
-                for (var i = 1; i < row_length + 1; i++) {
-                    //console.log(trList[i].childNodes[listNum].innerHTML);
-                    sortList.push(trList[i].childNodes[listNum].innerHTML);
-                    //console.log(sortList);
+                for (var i = 0; i < col_length; i++) {
+                    console.log(trList[i + 1].childNodes[listNum].innerHTML);
+                    oldList.push(trList[i + 1].childNodes[listNum].innerHTML);
+                    console.log(oldList);
                 }
-                //得到所要求经排序后的数组
-                //降序排序
-                newList = sortList.sort(sortNumber);
-                //需要升序则取反
-                if (!flag) {
-                    newList = newList.reverse();
-                }
-                //获得当前列的数据分布情况
-                sortList = [];
-                for (i = 1; i < row_length + 1; i++) {
-                    sortList.push(trList[i].childNodes[listNum].innerHTML);
-                }
-                //根据前后两个数组，重新排序列表项
-                changeOrder(newList, sortList);
 
-                function sortNumber(a, b) {
-                    return b - a;
-                }
-                //根据排序结果重新排列行序
-                function changeOrder(newList, oldList) {
-                    var len = newList.length,
-                        pos_before,
-                        pos_now,
-                        trList = tab.childNodes,
-                        tempNode = document.createElement('tr'),
-                        temp;
-                    for (var k = 0; k < len; k++) {
-                        //记录当前值在新表中位置，并寻找当前值在原表中的位置
-                        pos_now = k;
-                        pos_before = oldList.indexOf(newList[k]);
-                        //如果当前值在两个表中的位置不一样，则交换两个节点的内容
-                        if (pos_now !== pos_before) {
-                            tempNode.innerHTML = trList[pos_before + 1].innerHTML;
-                            trList[pos_before + 1].innerHTML = trList[pos_now + 1].innerHTML;
-                            trList[pos_now + 1].innerHTML = tempNode.innerHTML;
-                            //更新表的内容
-                            temp = oldList[pos_before];
-                            oldList[pos_before] = oldList[pos_now];
-                            oldList[pos_now] = temp;
-                        }
+                for (var i = 0; i < oldList.length - 1; i++) {
+                    var max = oldList[i];
+                    if (max > oldList[i + 1]) {
+                        max = oldList[i + 1]
                     }
                 }
+
+
+
+
+
+                //得到所要求经排序后的数组
+                //降序排序
+                // newList = sortList.sort(sortNumber);
+                // //需要升序则取反
+                // if (!flag) {
+                //     newList = newList.reverse();
+                // }
+                // //获得当前列的数据分布情况
+                // sortList = [];
+                // for (i = 0; i < col_length; i++) {
+                //     sortList.push(trList[i+1].childNodes[listNum].innerHTML);
+                // }
+                // //根据前后两个数组，重新排序列表项
+                // changeOrder(newList, sortList);
+
+                // function sortNumber(a, b) {
+                //     return b - a;
+                // }
+                // //根据排序结果重新排列行序
+                // function changeOrder(newList, oldList) {
+                //     var len = newList.length,
+                //         pos_before,
+                //         pos_now,
+                //         trList = tab.childNodes,
+                //         tempNode = document.createElement('tr'),
+                //         temp;
+                //     for (var k = 0; k < len; k++) {
+                //         //记录当前值在新表中位置，并寻找当前值在原表中的位置
+                //         pos_now = k;
+                //         pos_before = oldList.indexOf(newList[k]);
+                //         //如果当前值在两个表中的位置不一样，则交换两个节点的内容
+                //         if (pos_now !== pos_before) {
+                //             tempNode.innerHTML = trList[pos_before + 1].innerHTML;
+                //             trList[pos_before + 1].innerHTML = trList[pos_now + 1].innerHTML;
+                //             trList[pos_now + 1].innerHTML = tempNode.innerHTML;
+                //             //更新表的内容
+                //             temp = oldList[pos_before];
+                //             oldList[pos_before] = oldList[pos_now];
+                //             oldList[pos_now] = temp;
+                //         }
+                //     }
+                // }
             }, false);
             return divNode;
         }
 
         function addbtnup(cfg) {
             for (var i = 1; i < tr01.length; i++) {
-                console.log(tr01[i]);
+                //console.log(tr01[i]);
                 var span_ = document.createElement('span');
                 span_.style.cssText = "display:block;width: 0px;height: 0px;border-left: 8px solid transparent;border-right: 8px solid transparent;cursor: pointer;position: absolute;right: 30px;border-bottom: 10px solid rgb(255, 255, 255);top: 9px;"
                 btnclick(span_, false, cfg);
@@ -171,7 +184,7 @@ var create = {
 
         function addbtndown(cfg) {
             for (var i = 1; i < tr01.length; i++) {
-                console.log(tr01[i]);
+                //console.log(tr01[i]);
                 var span_ = document.createElement('span');
                 span_.style.cssText = "display:block;width: 0px;height: 0px;border-left: 8px solid transparent;border-right: 8px solid transparent;cursor: pointer;position: absolute;right: 30px;border-top: 10px solid rgb(255, 255, 255);top: 23px;"
                 btnclick(span_, true, cfg);

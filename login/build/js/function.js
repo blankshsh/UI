@@ -9,7 +9,7 @@ var LoginBox = {
     init: function(cfg) {
         cfg = cfg || {};
         //console.log(cfg);
-        cfg.name=cfg.name || "";
+        cfg.name = cfg.name || "";
         cfg.box = cfg.box || {};
         cfg.title = cfg.title || {};
         cfg.span = cfg.span || {};
@@ -125,7 +125,7 @@ var LoginBox = {
             //处理冒泡
             var e = window.event || event;
             e.stopPropagation ? e.stopPropagation() : e.cancelBubble = !0;
-            me.box.show();
+            me.box.toggle();
         })
         me.btnSure.on("click", function() {
             me.box.hide();
@@ -183,6 +183,12 @@ var LoginBox = {
                     el.releaseCapture(),
                     el.onmousemove = el.onmouseup = null
                 ) : $(document).unbind("mousemove", mouseMove).unbind("mouseup", mouseUp);
+            document.onclick = null;
+            setTimeout(function() {
+                document.onclick = function() {
+                    me.box.hide();
+                }
+            }, 50)
         }
     }
 }
