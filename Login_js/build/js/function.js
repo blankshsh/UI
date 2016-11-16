@@ -1,5 +1,6 @@
 function g_i(name) {
     return document.getElementById(name);
+
 }
 
 function create(name) {
@@ -38,15 +39,18 @@ var LoginBox = {
         var loginbox_ = create('div'),
             h1_ = create('h1'),
             btn_sure = create('span'),
-            btn_cancel = create('span');
+            btn_cancel = create('span'),
+            changesize_ = create('i');
         loginbox_.id = name_ + 'loginbox';
         h1_.id = name_ + "hold";
         btn_sure.id = name_ + "btnSure";
-        btn_cancel.id = name_ + "btnCancel";
+        btn_cancel.id = name_ + "btnCancel"
+        changesize_.id = name_ + "changesize";
         //添加元素
         loginbox_.appendChild(h1_);
         loginbox_.appendChild(btn_sure);
         loginbox_.appendChild(btn_cancel);
+        loginbox_.appendChild(changesize_);
         document.body.appendChild(loginbox_);
         //运行绑定函数（绑定元素）
         me.bind(name_, cfg);
@@ -60,6 +64,7 @@ var LoginBox = {
         me.btnCancel = g_i(name_ + "btnCancel");
         me.span = me.box.getElementsByTagName('span');
         me.loginbtn = g_i("login");
+        me.sizebtn = g_i(name_ + "changesize");
         //运行添加样式函数
         me.assignment(name_, cfg);
     },
@@ -76,6 +81,7 @@ var LoginBox = {
         me.btnSure.style.cssText += "color: #fff;background-color: #357ebd;border-color: #428bca;position: absolute;left: 50%;top: 60%;transform: translate(-100%);margin-left: -50px";
         me.btnCancel.style.cssText += "color: #fff; background-color: #d9534f; border-color: #d43f3a;position: absolute;left: 50%;top: 60%;margin-left: 50px";
         me.box.style.cssText += cfg.box.css;
+        me.sizebtn.style.cssText += "background: #000;display:block;width: 20px;height: 20px;position: absolute;bottom: 0;right: 0;cursor: se-resize;";
         for (var i = 0; i < me.span.length; i++) {
             me.span[i].style.cssText += cfg.span.css;
             var lineheight_ = Number(me.span[i].style.height.replace(/px$/, ''));
@@ -108,11 +114,11 @@ var LoginBox = {
     },
     click: function(name_, cfg) {
         //点击事件
-
         var me = this;
-        me.addEvent(me.loginbtn, 'click', function() {
+        me.addEvent(me.loginbtn, 'click', function(e) {
             //处理冒泡
-            var e = event ? event : (window.event ? window.event : null);
+            var e = e || event || window.event;
+            //var e = event ? event : (window.event ? window.event : null);
             e.stopPropagation ? e.stopPropagation() : e.cancelBubble = !0;
             me.box.style.display = me.box.style.display == 'block' ? 'none' : 'block';
         })
@@ -122,17 +128,17 @@ var LoginBox = {
         me.addEvent(me.btnCancel, 'click', function() {
             me.box.style.display = "none";
         })
-        me.addEvent(me.box, 'click', function() {
+        me.addEvent(me.box, 'click', function(e) {
             //处理冒泡
-            var e = window.event || event;
+            var e = e || event || window.event;
             e.stopPropagation ? e.stopPropagation() : e.cancelBubble = !0;
         })
-
         document.onclick = function() {
             me.box.style.display = "none";
         };
         //运行点击拖动函数
         me.move(name_, cfg);
+        //me.changesize(name_, cfg);
     },
     move: function(name_, cfg) {
         //点击拖动事件
@@ -206,5 +212,73 @@ var LoginBox = {
             me.box.style.left = "50%";
             me.box.style.top = "50%";
         }
-    }
+    },
+    // changesize: function(name_, cfg) {
+    //     //点击拖动事件
+    //     var me = this;
+    //     //创建储存位移值元素
+    //     var clientX, clientY, moving;
+    //     var mouseDown = function(event) {
+    //         event = event || window.event;
+    //         clientX = event.clientX;
+    //         clientY = event.clientY;
+    //         moving = !0;
+    //         //鼠标move 运行mouseMove()函数
+    //         document.onmousemove = function(e) {
+    //                 mouseMove(e);
+    //             }
+    //             //鼠标up  解除绑定跟onmousemove onmouseup
+    //             //解除document.onclick事件 处理移动范围过大造成的误触隐藏事件
+    //             //使用延时器 重新添加document.onclick隐藏box的事件
+    //         document.onmouseup = function(e) {
+    //             event = event || window.event;
+    //             document.onmouseup = null;
+    //             document.onmousemove = null;
+    //             document.onclick = null;
+    //             setTimeout(function() {
+    //                     document.onclick = function() {
+    //                         me.box.style.display = "none";
+    //                     }
+    //                 }, 50)
+    //                 // me.title.removeEventListener('mousedown', mouseDownHandler);
+    //                 // me.title.removeEventListener('mousemove', mouseMoveHandler);
+    //                 // me.title.removeEventListener('mouseup', mouseUpHandler);
+    //         }
+    //     };
+    //     var mouseMove = function(event) {
+    //         //拖动事件的主函数
+    //         //var me =this;
+    //         if (!moving) return;
+    //         event = event || window.event;
+    //         //新建拖动后的元素位置
+    //         var newClientX = event.clientX;
+    //         var newClientY = event.clientY;
+    //         //获取元素离top left的距离
+    //         //console.log(me.box);
+    //         var height = Number(me.box.style.height.replace(/px$/, ''));
+    //         //console.log(height);
+    //         var width = Number(me.box.style.width.replace(/px$/, ''));
+    //         //console.log(width);
+    //         //赋值最终的拖动距离
+    //         console.log(newClientX - clientX);
+    //         newWidth = width + (newClientX - clientX);
+    //         newHeight = height + (newClientY - clientY);
+    //         // newWidth = parseInt(newWidth / 2);
+    //         // newHeight = parseInt(newHeight / 2);
+    //         //赋值最终计算结果给被拖动的元素
+    //         me.box.style.height = newHeight + "px";
+    //         me.box.style.width = newWidth + "px";
+    //         //新位置记录赋值
+    //         // height = newHeight;
+    //         // width = newWidth;
+    //     };
+    //     //绑定鼠标拖动的监听事件
+    //     me.addEvent(me.sizebtn, 'mousedown', mouseDown);
+    //     //当窗口改变时 运行重排列
+    //     window.onresize = function(e) {
+    //         //console.log(me.box);
+    //         me.box.style.left = "50%";
+    //         me.box.style.top = "50%";
+    //     }
+    // }
 }

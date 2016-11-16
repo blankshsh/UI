@@ -26,12 +26,13 @@ var LoginBox = {
         //console.log(name);
         var me = this;
         var wrpname = cfg.name + 'loginbox';
-        console.log(wrpname);
+        //console.log(wrpname);
         var loginbox_ = $('<div id="' + wrpname + '">');
         var h1_ = $('<h1 id="hold">');
         var btn_sure = $('<span class="btnSure">');
         var btn_cancel = $('<span class="btnCancel">');
-        loginbox_.append(h1_).append(btn_sure).append(btn_cancel);
+        var size = $('<i id="changesize">');
+        loginbox_.append(h1_).append(btn_sure).append(btn_cancel).append(size);
         $("body").prepend(loginbox_);
         me.bind(wrpname, cfg);
     },
@@ -47,6 +48,7 @@ var LoginBox = {
         me.btnCancel = $('' + wrpname + ' .btnCancel');
         me.span = $('' + wrpname + ' span');
         me.loginbtn = $("#login");
+        me.size = $('' + wrpname + " #changesize");
         me.assignment(wrpname, cfg);
     },
     assignment: function(wrpname, cfg) {
@@ -106,6 +108,17 @@ var LoginBox = {
             "top": "60%",
             "margin-left": "50px"
         });
+        me.size.css({
+            "background": "#000",
+            //"background": "transparent",
+            "display": "block",
+            "width": "20px",
+            "height": "20px",
+            "position": "absolute",
+            "bottom": "0",
+            "right": "0",
+            "cursor": "se-resize"
+        });
         me.box.css(cfg.box);
         me.title.css(cfg.title);
         me.span.css(cfg.span);
@@ -142,6 +155,7 @@ var LoginBox = {
             me.box.hide();
         }
         me.move(wrpname, cfg);
+        me.changesize(wrpname, cfg);
     },
     move: function(wrpname, cfg) {
         //点击拖动事件
@@ -190,5 +204,59 @@ var LoginBox = {
                 }
             }, 50)
         }
+    },
+    changesize: function(wrpname, cfg) {
+        //点击变换大小事件
+        var me=this;
+        var width, height;
+        console.log(me.box);
+        var top = me.box.offsetTop;
+        var left = me.box.offsetLeft;
+        var me = this;
+        var hold_ = '' + wrpname + ' #changesize';
+        //console.log(hold_);
+        $(document).delegate(hold_, 'mousedown', function(e) {
+            width = e.clientX, height = e.clientY, $this = $(this).css('cursor', 'se-resize');
+            this.setCapture ? (
+                this.setCapture(),
+                this.onmousemove = function(ev) {
+                    mouseMove(ev || event);
+                },
+                this.onmouseup = mouseUp
+            ) : $(document).bind("mousemove", mouseMove).bind("mouseup", mouseUp);
+        });
+
+        function mouseMove(e) {
+            //console.log(hold_);
+            var target = $this.parents(wrpname);
+            var widthsize = e.clientX - width;
+            var heightsize = e.clientY - height;
+            //console.log(target.height());
+            //console.log(widthsize);
+            width = e.clientX;
+            height = e.clientY;
+            target.height(target.height() + heightsize + "px");
+            target.width(target.width() + widthsize + "px") ;
+            // target.css({
+            //     "left":left,
+            //     "top":top
+            // })
+        }
+
+        function mouseUp(e) {
+            var el = $this.css('cursor', 'se-resize').get(0);
+            el.releaseCapture ?
+                (
+                    el.releaseCapture(),
+                    el.onmousemove = el.onmouseup = null
+                ) : $(document).unbind("mousemove", mouseMove).unbind("mouseup", mouseUp);
+            document.onclick = null;
+            setTimeout(function() {
+                document.onclick = function() {
+                    me.box.hide();
+                }
+            }, 50)
+        }
     }
+
 }
